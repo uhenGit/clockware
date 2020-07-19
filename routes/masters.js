@@ -1,7 +1,7 @@
 // masters route
 const express = require("express");
 const db = require("../db/db");
-const Master = require("../models/Masters.model");
+const Master = require("../models/Masters");
 const router = express.Router();
 
 // protected (allow for registered clients)
@@ -18,13 +18,16 @@ router.get("/allmasters", (req, res) => {
 
 // protected (allow for admin)
 router.post("/register", (req, res) => {
-  let { name, city } = req.body;
+  let {
+    name,
+    city
+  } = req.body;
   let rate = 0;
   Master.create({
-    name,
-    city,
-    rate,
-  })
+      name,
+      city,
+      rate,
+    })
     .then((master) =>
       res.status(200).json({
         msg: `Master ${master.name} created`,
@@ -40,10 +43,10 @@ router.post("/register", (req, res) => {
 // protected (allow for admin)
 router.delete("/deletemaster/:id", (req, res) => {
   Master.destroy({
-    where: {
-      id: req.params.id,
-    },
-  })
+      where: {
+        id: req.params.id,
+      },
+    })
     .then((result) => {
       console.log(result);
       res.status(200).json({

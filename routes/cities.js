@@ -1,7 +1,7 @@
 // cities route
 const express = require("express");
 const router = express.Router();
-const City = require("../models/Cities.model");
+const City = require("../models/Cities");
 
 router.get("/allcities", (req, res) => {
   City.findAll()
@@ -29,10 +29,10 @@ router.post("/addcity", (req, res) => {
 });
 router.get("/allcities/:id", (req, res) => {
   City.findAll({
-    where: {
-      id: req.params.id,
-    },
-  })
+      where: {
+        id: req.params.id,
+      },
+    })
     .then((city) => {
       res.status(200).json(city[0].dataValues);
     })

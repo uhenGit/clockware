@@ -1,7 +1,7 @@
 // orders route
 const express = require("express");
 const db = require("../db/db");
-const Order = require("../models/Orders.model");
+const Order = require("../models/Orders");
 const router = express.Router();
 
 // protected (allow for admin)
@@ -11,15 +11,43 @@ router.get("/allorders", (req, res) => {
     .catch((err) => console.log("get order list error: ", err));
 });
 
+// protected get orders by date and time
+router.get("/getcurrentorders/:date/:time", (req, res) => {
+  Order.findAll({
+    where: {
+      date: req.params.date,
+      time: Number(req.params.time),
+    },
+  })
+    .then((orders) => {
+      let engaged_masters = [];
+      orders.forEach((order) => {
+        engaged_masters.push(order.dataValues.master_name);
+      });
+      console.log(engaged_masters);
+      res.status(200).json({ engaged_masters });
+    })
+    .catch((err) =>
+      res.status(400).json({
+        errMsg: err.parent.routine,
+      })
+    );
+});
+
 // protected (allow for current user)
-// join all orders and all masters in current city
-// and select masters that do not exists in the orders
 router.post("/createorder", (req, res) => {
-  let { client_name, master_name, city, clock_size, date, time } = req.body;
-  Client.create({
+  let {
     client_name,
     master_name,
-    city,
+    city_name,
+    clock_size,
+    date,
+    time,
+  } = req.body;
+  Order.create({
+    client_name,
+    master_name,
+    city_name,
     clock_size,
     date,
     time,
@@ -29,11 +57,11 @@ router.post("/createorder", (req, res) => {
         msg: `Order at ${order.date} created`,
       })
     )
-    .catch((err) =>
-      res.status(401).json({
-        errMsg: err.parent.detail,
-      })
-    );
+    .catch((err) => {
+      res.status(400).json({
+        errMsg: err.parent.routine,
+      });
+    });
 });
 
 // protected (allow only for admin)
@@ -64,8 +92,8 @@ router.put("/updateorder/:id", (req, res) => {
       }
     })
     .catch((err) =>
-      res.status(401).json({
-        errMsg: err.name,
+      res.status(400).json({
+        errMsg: err.parent.routine,
       })
     );
 });

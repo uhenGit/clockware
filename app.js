@@ -4,10 +4,11 @@ const path = require("path");
 const db = require("./db/db");
 const PORT = process.env.PORT || 3001;
 
-const indexRouter = require("./routes/index");
+//const indexRouter = require("./routes/index");
 const clientsRouter = require("./routes/clients");
 const citiesRouter = require("./routes/cities");
 const mastersRouter = require("./routes/masters");
+const ordersRouter = require("./routes/orders");
 
 const app = express();
 db.authenticate()
@@ -23,9 +24,10 @@ app.use(
 
 app.use(express.static("client/public"));
 
-app.use("/index", indexRouter);
+//app.use("/index", indexRouter);
 app.use("/clients", clientsRouter);
 app.use("/cities", citiesRouter);
 app.use("/masters", mastersRouter);
+app.use("/orders", ordersRouter);
 
 app.listen(PORT, console.log(`server starts on port ${PORT}`));

@@ -29,6 +29,6 @@ const Order = db.define("orders", {
   },
 });
 Order.sync().then(() => {
-  console.log("masters table created");
+  console.log("orders table created");
 });
 module.exports = Order;

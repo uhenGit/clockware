@@ -16,6 +16,11 @@ const Master = db.define("masters", {
     allowNull: false,
   },
 });
+Master.associate = (models) => {
+  Master.belongsTo(models.City, {
+    foreignKey: "cityId",
+  });
+};
 Master.sync().then(() => {
   console.log("masters table created");
 });

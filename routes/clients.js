@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
-const Client = require("../models/Clients.model");
+const Client = require("../models/Clients");
 const router = express.Router();
 
 // protected (allow for admin)
@@ -15,7 +15,12 @@ router.get("/allclients", (req, res) => {
 // public
 // register router with bcrypt
 router.post("/register", (req, res) => {
-  let { name, mail, password, city } = req.body;
+  let {
+    name,
+    mail,
+    password,
+    city
+  } = req.body;
   if (!name || !mail || !password) {
     return res.status(400).json({
       alert: "all fields are required",
@@ -32,11 +37,11 @@ router.post("/register", (req, res) => {
       } else {
         password = hash;
         Client.create({
-          name,
-          mail,
-          password,
-          city,
-        })
+            name,
+            mail,
+            password,
+            city,
+          })
           .then((client) =>
             res.status(200).json({
               msg: `User ${client.name} created`,
@@ -57,20 +62,22 @@ router.post("/register", (req, res) => {
 
 // protected (allow for admin or current user)
 router.put("/updateclient/:id", (req, res) => {
-  let { name, mail, password, city } = req.body;
-  Client.update(
-    {
+  let {
+    name,
+    mail,
+    password,
+    city
+  } = req.body;
+  Client.update({
       name,
       mail,
       password,
       city,
-    },
-    {
+    }, {
       where: {
         id: req.params.id,
       },
-    }
-  )
+    })
     .then((result) => {
       if (result[0] !== 0) {
         res.status(200).json({
@@ -92,10 +99,10 @@ router.put("/updateclient/:id", (req, res) => {
 // protected (allow for admin or current user)
 router.delete("/deleteclient/:id", (req, res) => {
   Client.destroy({
-    where: {
-      id: req.params.id,
-    },
-  })
+      where: {
+        id: req.params.id,
+      },
+    })
     .then((result) => {
       console.log("delete result: ", result);
       if (result > 0) {
